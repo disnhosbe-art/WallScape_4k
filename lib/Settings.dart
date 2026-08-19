@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'ads/banner_ad_widget.dart';
-
-
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
@@ -15,10 +12,8 @@ class SettingsPage extends StatelessWidget {
 
       body: SafeArea(
         child: ListView(
-
           padding: const EdgeInsets.all(20),
           children: [
-
             const SizedBox(height: 20),
 
             const Text(
@@ -29,7 +24,6 @@ class SettingsPage extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
-
 
             const SizedBox(height: 30),
 
@@ -57,10 +51,7 @@ class SettingsPage extends StatelessWidget {
                 );
 
                 if (await canLaunchUrl(url)) {
-                  await launchUrl(
-                    url,
-                    mode: LaunchMode.externalApplication,
-                  );
+                  await launchUrl(url, mode: LaunchMode.externalApplication);
                 }
               },
               child: buildTile(
@@ -80,10 +71,7 @@ class SettingsPage extends StatelessWidget {
                 );
 
                 if (await canLaunchUrl(url)) {
-                  await launchUrl(
-                    url,
-                    mode: LaunchMode.inAppBrowserView,
-                  );
+                  await launchUrl(url, mode: LaunchMode.inAppBrowserView);
                 }
               },
               child: buildTile(
@@ -94,32 +82,21 @@ class SettingsPage extends StatelessWidget {
             ),
 
             const SizedBox(height: 55),
-
-            const BannerAdWidget(),
-
           ],
         ),
       ),
     );
   }
 
-  Widget buildTile(
-      IconData icon,
-      String title,
-      String subtitle,
-      ) {
+  Widget buildTile(IconData icon, String title, String subtitle) {
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 16,
-        vertical: 16,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       decoration: BoxDecoration(
         color: const Color(0xff1B1B20),
         borderRadius: BorderRadius.circular(24),
       ),
       child: Row(
         children: [
-
           Container(
             height: 60,
             width: 60,
@@ -127,11 +104,7 @@ class SettingsPage extends StatelessWidget {
               color: const Color(0xff3C4A1E),
               borderRadius: BorderRadius.circular(18),
             ),
-            child: Icon(
-              icon,
-              color: const Color(0xffD8FF48),
-              size: 30,
-            ),
+            child: Icon(icon, color: const Color(0xffD8FF48), size: 30),
           ),
 
           const SizedBox(width: 18),
@@ -140,7 +113,6 @@ class SettingsPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-
                 Text(
                   title,
                   style: const TextStyle(
@@ -154,20 +126,13 @@ class SettingsPage extends StatelessWidget {
 
                 Text(
                   subtitle,
-                  style: const TextStyle(
-                    color: Colors.white54,
-                    fontSize: 15,
-                  ),
+                  style: const TextStyle(color: Colors.white54, fontSize: 15),
                 ),
               ],
             ),
           ),
 
-          const Icon(
-            Icons.chevron_right,
-            color: Colors.white54,
-            size: 30,
-          ),
+          const Icon(Icons.chevron_right, color: Colors.white54, size: 30),
         ],
       ),
     );

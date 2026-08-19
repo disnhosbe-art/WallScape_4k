@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'ads/app_open_ad_manager.dart';
-import 'ads/rewarded_ad_manager.dart';
+//import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'home_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await MobileAds.instance.initialize();
+  //await MobileAds.instance.initialize();
 
   // 👇 غادي يتحمل الإعلان غير مرة
-  AppOpenAdManager.loadAd();
 
   runApp(const MyApp());
 }
@@ -53,19 +50,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
     } else {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(
-          builder: (context) => const HomePage(),
-        ),
+        MaterialPageRoute(builder: (context) => const HomePage()),
       );
     }
-  }
-
-  void handleStart() {
-    RewardedAdManager.showAd(
-      onFinished: () {
-        next();
-      },
-    );
   }
 
   @override
