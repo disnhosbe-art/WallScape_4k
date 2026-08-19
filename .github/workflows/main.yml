@@ -5,7 +5,7 @@ on:
 
 jobs:
   build-ios:
-    name: Build Flutter IPA
+    name: Build Flutter iOS IPA
     runs-on: macos-latest
 
     steps:
@@ -15,14 +15,20 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
+          flutter-version: "3.44.2"
           channel: stable
-          flutter-version: 3.44.2
           cache: true
 
-      - name: Check Flutter version
+      - name: Check Flutter
         run: |
           flutter --version
           dart --version
+
+      - name: Enable Swift Package Manager
+        run: flutter config --enable-swift-package-manager
+
+      - name: Flutter Clean
+        run: flutter clean
 
       - name: Flutter Pub Get
         run: flutter pub get
