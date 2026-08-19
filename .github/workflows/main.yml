@@ -1,41 +1,49 @@
-name: iOS IPA Build
-
 on:
-  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+      - master
+
+  push:
+    branches:
+      - main
+      - master
+      - develop
+
+name: "Build & Release"
 
 jobs:
-  build-ios:
-    name: Build Flutter IPA
+  build:
+    name: Build & Release
     runs-on: macos-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
+      - uses: subosito/flutter-action@v2
         with:
           channel: stable
+          flutter-version: '3.44.2'
+          cache: false
 
-      - name: Flutter Pub Get
-        run: flutter pub get
+      - run: flutter pub get
 
-      - name: Install CocoaPods
-        run: |
-          cd ios
-          pod install --repo-update
+      - run: flutter test
 
-      - name: Build iOS
-        run: flutter build ios --release --no-codesign
+      - run: flutter build apk --debug --split-per-abi
 
-      - name: Create IPA
-        run: |
-          mkdir -p Payload
-          cp -R build/ios/iphoneos/Runner.app Payload/
-          zip -r FlutterIpaExport.ipa Payload
+      - run: |
+          flutter build ios --no-codesign
+          cd build/ios/iphoneos
+          mkdir Payload
+          cd Payload
+          ln -s ../Runner.app
+          cd ..
+          zip -r app.ipa Payload
 
-      - name: Upload IPA
-        uses: actions/upload-artifact@v4
+      - name: Push to Releases
+        uses: ncipollo/release-action@v1
         with:
-          name: Flutter-iOS-IPA
-          path: FlutterIpaExport.ipa
+          artifacts: "build/app/outputs/apk/debug/*,build/ios/iphoneos/app.ipa"
+          tag: v1.0.${{ github.run_number }}
+          token: ${{ secrets.TOKEN }}
