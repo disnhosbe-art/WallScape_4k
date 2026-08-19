@@ -1,49 +1,48 @@
+name: iOS IPA Build
+
 on:
-  pull_request:
-    branches:
-      - main
-      - master
-
-  push:
-    branches:
-      - main
-      - master
-      - develop
-
-name: "Build & Release"
+  workflow_dispatch:
 
 jobs:
-  build:
-    name: Build & Release
+  build-ios:
+    name: Build Flutter IPA
     runs-on: macos-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - uses: subosito/flutter-action@v2
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
         with:
           channel: stable
-          flutter-version: '3.44.2'
-          cache: false
+          flutter-version: 3.44.2
+          cache: true
 
-      - run: flutter pub get
+      - name: Check Flutter version
+        run: |
+          flutter --version
+          dart --version
 
-      - run: flutter test
+      - name: Flutter Pub Get
+        run: flutter pub get
 
-      - run: flutter build apk --debug --split-per-abi
+      - name: Install CocoaPods
+        run: |
+          cd ios
+          pod install --repo-update
 
-      - run: |
-          flutter build ios --no-codesign
-          cd build/ios/iphoneos
-          mkdir Payload
-          cd Payload
-          ln -s ../Runner.app
-          cd ..
-          zip -r app.ipa Payload
+      - name: Build iOS
+        run: flutter build ios --release --no-codesign
 
-      - name: Push to Releases
-        uses: ncipollo/release-action@v1
+      - name: Create IPA
+        run: |
+          mkdir -p Payload
+          cp -R build/ios/iphoneos/Runner.app Payload/
+          zip -r FlutterIpaExport.ipa Payload
+
+      - name: Upload IPA
+        uses: actions/upload-artifact@v4
         with:
-          artifacts: "build/app/outputs/apk/debug/*,build/ios/iphoneos/app.ipa"
-          tag: v1.0.${{ github.run_number }}
-          token: ${{ secrets.TOKEN }}
+          name: Flutter-iOS-IPA
+          path: FlutterIpaExport.ipa
